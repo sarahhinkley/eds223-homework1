@@ -1,0 +1,79 @@
+---
+title: "EDS 223: Homework Assignment 1"
+subtitle: "Environmental Justice in Kern County: Mapping PM2.5 and Communities of Color"
+author: "Sarah A. Hinkley"
+date: 2026-10-09
+format:
+  pdf:
+    toc: false
+    code-fold: false
+format-links: [typst]
+execute:
+  echo: true
+  message: false
+  warning: false
+  results: hide 
+---
+
+## Load packages
+```{r}
+library(tidyverse)
+library(sf)
+library(here)
+library(stars)
+library(tmap)
+```
+
+## Read data
+```{r}
+#| results: hide
+
+# Geodatabase of EJScreen data at the Census Block Group level
+ejscreen <- sf::st_read(here::here("data", "ejscreen","EJSCREEN_2023_BG_StatePct_with_AS_CNMI_GU_VI.gdb")) 
+```
+
+## Filter to state and county of interest
+```{r}
+# filter to a state you are interested in
+
+california <- ejscreen %>%
+  dplyr::filter(ST_ABBREV == "CA")
+
+
+# filter to a county you are interested in
+
+kern_county <- ejscreen %>%
+  dplyr::filter(CNTY_NAME %in% c("Kern County"))
+
+```
+
+## Map 1: PM 2.5 distribution in Kern County, CA
+```{r}
+kern_pm25 <- tm_shape(kern_county) +
+             tm_polygons(fill='PM25', 
+                         fill.legend = tm_legend("PM 2.5 (μg/m³)"), 
+                         fill.scale = tm_scale(values = "YlGnBu")
+                         ) +
+             tm_title("PM2.5 by Census Block Group, Kern County, CA") +
+             tm_compass(position = c("left", "bottom")) +
+             tm_scalebar(position = c("left", "bottom"))
+
+kern_pm25
+```
+
+## Map 2: People of Color in Kern County, CA
+```{r}
+kern_POC <- tm_shape(kern_county) +
+            tm_polygons(fill='PEOPCOLORPCT', 
+                        fill.legend = tm_legend("People of Color (%)"), 
+                        fill.scale = tm_scale(values = "YlGnBu")
+                        ) +
+            tm_title("People of Color by Census Block Group, Kern County, CA") +
+            tm_compass(position = c("left", "bottom")) +
+            tm_scalebar(position = c("left", "bottom"))
+
+kern_POC
+```
+
+## Interpretation of Maps
+The highest PM 2.5 concentrations (which reach around 10–11 µg/m³) are concentrated around Bakersfield and the San Joaquin Valley, where several block groups also have populations that are 60% or more people of color. Some of these concentrations exceed the EPA’s annual PM 2.5 standard of 9.0 µg/m³, which indicates a potential health risk for residents. However, the relationship is not uniform across the county. Some of the  parts of eastern Kern County have large majorities of of people of color but some of the county’s lowest PM 2.5 levels. This suggests that geography (like a valley's tendency to trap pollution) plays a major role alongside Kern County's demographics. A future analysis could include income and proximity to pollution sources like freeways. 
