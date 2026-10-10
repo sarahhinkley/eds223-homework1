@@ -49,28 +49,38 @@ kern_county <- ejscreen %>%
 
 ## Map 1: PM 2.5 distribution in Kern County, CA
 ```{r}
+#| fig-width: 9
+#| fig-height: 5
 kern_pm25 <- tm_shape(kern_county) +
              tm_polygons(fill='PM25', 
-                         fill.legend = tm_legend("PM 2.5 (μg/m³)"), 
+                         fill.legend = tm_legend("PM 2.5 (μg/m³)", 
+                           position = tm_pos_out("center", "bottom"),
+                           orientation = "landscape",
+                           text.size = 0.8), 
                          fill.scale = tm_scale(values = "YlGnBu")
                          ) +
              tm_title("PM2.5 by Census Block Group, Kern County, CA") +
              tm_compass(position = c("left", "bottom")) +
-             tm_scalebar(position = c("left", "bottom"))
+             tm_scalebar(position = c("left", "bottom"), text.size = 0.8)
 
 kern_pm25
 ```
 
 ## Map 2: People of Color in Kern County, CA
 ```{r}
+#| fig-width: 9
+#| fig-height: 5
 kern_POC <- tm_shape(kern_county) +
             tm_polygons(fill='PEOPCOLORPCT', 
-                        fill.legend = tm_legend("People of Color (%)"), 
+                        fill.legend = tm_legend("People of Color (%)", 
+                           position = tm_pos_out("center", "bottom"),
+                           orientation = "landscape",
+                           text.size = 0.8), 
                         fill.scale = tm_scale(values = "YlGnBu")
                         ) +
             tm_title("People of Color by Census Block Group, Kern County, CA") +
             tm_compass(position = c("left", "bottom")) +
-            tm_scalebar(position = c("left", "bottom"))
+            tm_scalebar(position = c("left", "bottom"), text.size = 0.8)
 
 kern_POC
 ```
